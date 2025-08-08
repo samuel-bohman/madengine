@@ -841,31 +841,13 @@ class RunModels:
             if not self.args.skip_model_run:
                 print("Running model...")
                 if "model_args" in self.context.ctx:
-                    model_docker.sh(
-                        "cd "
-                        + model_dir
-                        + " && "
-                        + script_name
-                        + " "
-                        + self.context.ctx["model_args"],
-                        timeout=None,
-                    )
+                    final_args = self.context.ctx["model_args"]
                 else:
-                    model_docker.sh(
-                        "cd " + model_dir + " && " + script_name + " " + info["args"],
-                        timeout=None,
-                    )
+                    final_args = info["args"]
+                model_docker.sh("cd " + model_dir + " && " + script_name + " " + final_args, timeout=None)
             else:
                 print("Skipping model run")
-                print(
-                    "To run model: "
-                    + "cd "
-                    + model_dir
-                    + " && "
-                    + script_name
-                    + " "
-                    + info["args"]
-                )
+                print("To run model: " + "cd " + model_dir + " && " + script_name + " " + info["args"])
 
             run_details.test_duration = time.time() - test_start_time
             print("Test Duration: {} seconds".format(run_details.test_duration))
